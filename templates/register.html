@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - بوابة الوظائف</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="form-container">
+        <h1>إنشاء حساب</h1>
+
+        <!-- Register Form -->
+        <form action="/register" method="POST" enctype="multipart/form-data">
+            <label for="first_name">الاسم الأول</label>
+            <input type="text" id="first_name" name="first_name" required>
+
+            <label for="last_name">الاسم الأخير</label>
+            <input type="text" id="last_name" name="last_name" required>
+
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">كلمة المرور</label>
+            <input type="password" id="password" name="password" required>
+            <label for="phone">رقم الهاتف:</label>
+            <input type="tel" name="phone" id="phone" placeholder="أدخل رقم الهاتف" required pattern="[0-9]{10}" title="الرجاء إدخال رقم هاتف مكون من 10 أرقام">
+            
+            <label for="description">الوصف</label>
+            <textarea id="description" name="description" rows="4" placeholder="أدخل وصفًا عن نفسك"></textarea>
+
+            <label for="cv">رفع السيرة الذاتية</label>
+            <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx">
+
+            <label for="photo">رفع صورة شخصية</label>
+            <input type="file" id="photo" name="photo" accept="image/*">
+
+            <button type="submit">إنشاء حساب</button>
+        </form>
+
+        <!-- Flash message (if any) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="message {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <div class="message">
+            <p>لديك حساب بالفعل؟ <a href="/job-seeker.html">تسجيل الدخول</a></p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+ <style>
+    /* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 0;
+}
+
+/* Centering the Form */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f6f9;
+}
+
+/* Form Container Styling */
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    text-align: right;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Form Fields Styling */
+label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #555;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+}
+
+input[type="file"] {
+    padding: 5px;
+    background-color: transparent;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #aaa;
+}
+
+/* Submit Button Styling */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #5A67D8;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #4C51BF;
+}
+
+/* Flash Message Styling */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+ul .message {
+    padding: 12px;
+    text-align: center;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+ul .message.success {
+    background-color: #28a745;
+    color: white;
+}
+
+ul .message.danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Bottom Message Link */
+.message {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.message a {
+    color: #5A67D8;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.message a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 600px) {
+    .form-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+
+ </style>

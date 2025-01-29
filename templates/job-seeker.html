@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - بوابة الوظائف</title>
+    <style>
+        /* Login Page Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f7; /* Gris clair comme fond */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f7;
+        }
+
+        .form-container {
+            width: 400px;
+            padding: 30px;
+            background-color: #fff; /* Fond blanc pour la carte de formulaire */
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .form-container h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333; /* Texte en gris foncé */
+            font-weight: 600;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: block;
+            color: #333; /* Gris foncé pour le texte des labels */
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        input:focus {
+            border-color: #1DBF73; /* Vert de Fiverr pour focus */
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #1DBF73; /* Vert principal de Fiverr */
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #16b763; /* Vert clair pour le survol */
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .flash-messages .message {
+            padding: 12px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .flash-messages .success {
+            background-color: #28a745; /* Vert succès */
+            color: white;
+        }
+
+        .flash-messages .danger {
+            background-color: #dc3545; /* Rouge pour les erreurs */
+            color: white;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        .message a {
+            color: #1DBF73; /* Vert pour les liens */
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .message a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #aaa; /* Gris clair pour le texte du pied de page */
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h1>تسجيل الدخول</h1>
+
+        <!-- Login Form -->
+        <form action="/job-seeker.html" method="POST">
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+
+            <label for="password">كلمة المرور</label>
+            <input type="password" id="password" name="password" placeholder="أدخل كلمة المرور" required>
+
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="message {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Registration Link -->
+        <div class="message">
+            <p>ليس لديك حساب؟ <a href="/register">إنشاء حساب</a></p>
+        </div>
+
+
+</body>
+</html>

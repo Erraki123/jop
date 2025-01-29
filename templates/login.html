@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>تسجيل الدخول</h1>
+            <form method="POST" action="/job-seeker.html">
+                <label for="email">البريد الإلكتروني:</label>
+                <input type="email" name="email" id="email" required>
+                
+                <label for="password">كلمة المرور:</label>
+                <input type="password" name="password" id="password" required>
+                
+                <button type="submit">تسجيل الدخول</button>
+            </form>
+            
+            <!-- Display flash messages if any -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for category, message in messages %}
+                    <li class="message {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+            
+            <p>ليس لديك حساب؟ <a href="{{ url_for('register') }}">إنشاء حساب جديد</a></p>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+    /* General styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f7; /* Gris clair comme fond */
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-container {
+        width: 400px;
+        padding: 30px;
+        background: #ffffff; /* Fond blanc pour la carte de formulaire */
+        box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: right;
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 600;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    input::placeholder {
+        color: #aaa;
+    }
+
+    input:focus {
+        border-color: #1DBF73; /* Vert de Fiverr pour focus */
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #1DBF73; /* Vert de Fiverr */
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #16b763; /* Vert clair pour survol */
+    }
+
+    .messages {
+        list-style: none;
+        margin-top: 10px;
+        padding: 0;
+    }
+
+    .message {
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    .message.success {
+        background-color: #28a745; /* Vert pour succès */
+        color: white;
+    }
+
+    .message.danger {
+        background-color: #dc3545; /* Rouge pour erreur */
+        color: white;
+    }
+
+    a {
+        color: #1DBF73; /* Vert pour les liens */
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+</style>
