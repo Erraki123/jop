@@ -5,7 +5,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
 
+from flask import Flask, render_template, request, redirect, url_for
+from flask_mail import Mail, Message
+import mysql.connector
+
 app = Flask(__name__)
+
+# إعدادات البريد الإلكتروني
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'raki39174@gmail.com'  # أدخل بريدك الإلكتروني هنا
+app.config['MAIL_PASSWORD'] = 'ajoa wryp boxv rxvc'  # أدخل كلمة مرور البريد الإلكتروني
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_DEFAULT_SENDER'] = 'raki39174@gmail.com'  # تحديد المرسل الافتراضي
+
+mail = Mail(app)
+
 
 # Secret key for session management
 app.secret_key = os.urandom(24)
@@ -251,8 +267,6 @@ def employer_dashboard():
 
     conn.close()
     return render_template('employer-dashboard.html', company_name=session['company_name'], jobs=jobs, applications=applications)
-
-
 @app.route('/add-job', methods=['POST'])
 def add_job():
     if 'employer_id' not in session:
@@ -285,12 +299,19 @@ def delete_job(job_id):
 
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # Supprimer les candidatures associées avant de supprimer l'offre
+    cursor.execute("DELETE FROM applications WHERE job_id = %s", (job_id,))
+    conn.commit()
+
+    # Supprimer l'offre d'emploi
     cursor.execute("DELETE FROM jobs WHERE id = %s AND employer_id = %s", (job_id, session['employer_id']))
     conn.commit()
     conn.close()
 
     flash('تم حذف الوظيفة بنجاح!', 'danger')
     return redirect(url_for('employer_dashboard'))
+
 
 @app.route('/edit-job/<int:job_id>', methods=['GET', 'POST'])
 def edit_job(job_id):
@@ -327,6 +348,7 @@ def edit_job(job_id):
 
         flash('تم تحديث الوظيفة بنجاح!', 'success')
         return redirect(url_for('employer_dashboard'))
+
 @app.route('/view-jobs', methods=['GET'])
 def view_jobs():
     conn = get_db_connection()
@@ -394,24 +416,88 @@ def apply_job(job_id):
 
     conn.close()
     return render_template('apply-job.html', job_id=job_id)
+from flask import flash, redirect, url_for, render_template
+
+@app.route('/handle-application/<int:application_id>/accept', methods=['POST'])
+
+def handle_application(application_id):
+    try:
+        # الاتصال بقاعدة البيانات
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # استعلام للحصول على بيانات الطلب مع البريد الإلكتروني من جدول users
+        cursor.execute("""
+            SELECT a.*, u.email
+            FROM applications a
+            JOIN users u ON a.user_id = u.id
+            WHERE a.id = %s
+        """, (application_id,))
+        application = cursor.fetchone()
+
+        if application:
+            # تحديث حالة الطلب إلى "تم قبوله"
+            cursor.execute("""
+                UPDATE applications
+                SET status = 'تم قبوله'
+                WHERE id = %s
+            """, (application_id,))
+            conn.commit()
+
+            # إرسال بريد إلكتروني إلى العامل
+            user_email = application['email']
+            subject = "تحديث حول طلبك"
+            body = "تم قبول ملفك وهو قيد الدراسة حاليًا."
+
+            msg = Message(subject, recipients=[user_email])
+            msg.body = body
+            try:
+                mail.send(msg)
+                # إضافة رسالة فلاش عند النجاح
+                flash(f"تم إرسال البريد الإلكتروني إلى {user_email} بنجاح", 'success')
+            except Exception as e:
+                flash(f"خطأ في إرسال البريد الإلكتروني: {str(e)}", 'error')
+
+            # إغلاق الاتصال بقاعدة البيانات
+            cursor.close()
+            conn.close()
+
+            return redirect(url_for('view_applications', job_id=application['job_id']))
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        flash("حدث خطأ في قاعدة البيانات", 'error')
+        return redirect(url_for('view_applications', job_id=application['job_id']))
+    except Exception as e:
+        print(f"Error: {e}")
+        flash("حدث خطأ غير متوقع", 'error')
+        return redirect(url_for('view_applications', job_id=application['job_id']))
 
 @app.route('/view-applications/<int:job_id>')
 def view_applications(job_id):
-    if 'employer_id' not in session:
-        flash('يرجى تسجيل الدخول أولاً.', 'warning')
-        return redirect(url_for('login_employer'))
+    try:
+        # الاتصال بقاعدة البيانات
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('''
-        SELECT applications.*, users.first_name, users.last_name, users.email 
-        FROM applications 
-        JOIN users ON applications.user_id = users.id 
-        WHERE job_id = %s
-    ''', (job_id,))
-    applications = cursor.fetchall()
-    conn.close()
+        # استعلام لجلب جميع الطلبات للوظيفة المحددة
+        cursor.execute("""
+            SELECT a.*, u.email
+            FROM applications a
+            JOIN users u ON a.user_id = u.id
+            WHERE a.job_id = %s
+        """, (job_id,))
+        applications = cursor.fetchall()
 
-    return render_template('view-applications.html', applications=applications)
+        cursor.close()
+        conn.close()
+
+        return render_template('view-applications.html', applications=applications)
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return "حدث خطأ في قاعدة البيانات", 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)

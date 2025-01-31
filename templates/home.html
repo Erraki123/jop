@@ -6,175 +6,192 @@
     <title>بوابة الوظائف</title>
     <link rel="stylesheet" href="static/css/style.css">
     <style>
-        /* Page d'accueil - Style Fiverr-like */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9fafb;
-            margin: 0;
-            padding: 0;
-        }
+ /* Styles généraux */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #0a1f44, #0047ab);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            background-color: #f9fafb;
-        }
+/* Header avec effet lumineux */
+.header {
+    width: 100%;
+    background: linear-gradient(135deg, #ffeb3b 30%, #fdd835);
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 5px 20px rgba(255, 235, 59, 0.5);
+}
 
-        .header {
-            width: 100%;
-            background-color: #1dbf73;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+/* Effet Glassmorphism sur la boîte de recherche */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+}
 
-        .header h1 {
-            margin: 0;
-        }
+.search-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 0, 0, 0.1);
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: 0.3s ease-in-out;
+}
 
-        .search-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            padding: 30px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+.search-box:hover {
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+}
 
-        .search-box {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 60%;
-            padding: 10px;
-            background-color: #f4f6f9;
-            border-radius: 25px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+.search-box input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
 
-        .search-box input {
-            width: 70%;
-            padding: 10px;
-            border: none;
-            border-radius: 25px;
-            outline: none;
-            font-size: 1rem;
-            color: #333;
-        }
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
 
-        .search-box button {
-            background-color: #1dbf73;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+.search-box button {
+    background: linear-gradient(135deg, #ffffff, #000000);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 3px 10px rgba(0, 89, 255, 0.5);
+}
 
-        .search-box button:hover {
-            background-color: #17a463;
-        }
+.search-box button:hover {
+    background: linear-gradient(135deg, #0026a3, #000d66);
+    transform: scale(1.05);
+}
 
-        .services-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
+/* Conteneur des services avec effet futuriste */
+.services-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
 
-        .service-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 250px;
-            text-align: center;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
+/* Effet Glassmorphism sur les boîtes de services */
+.service-box {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 15px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
-        .service-box:hover {
-            transform: translateY(-10px);
-        }
+.service-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+}
 
-        .service-box h3 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
+.service-box img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
 
-        .service-box p {
-            font-size: 1rem;
-            color: #777;
-            margin-bottom: 20px;
-        }
+.service-box h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: white;
+}
 
-        .btn-primary {
-            background-color: #1dbf73;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
+.service-box p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+}
 
-        .btn-primary:hover {
-            background-color: #17a463;
-        }
+/* Bouton futuriste */
+.btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, #0059ff, #0026a3);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 89, 255, 0.5);
+}
 
-        @media screen and (max-width: 768px) {
-            .search-box {
-                width: 80%;
-            }
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0026a3, #000d66);
+    transform: scale(1.1);
+}
 
-            .services-container {
-                flex-direction: column;
-                align-items: center;
-            }
+/* Mode Responsive */
+@media screen and (max-width: 768px) {
+    .search-box {
+        width: 100%;
+    }
 
-            .service-box {
-                width: 80%;
-                margin-bottom: 20px;
-            }
-        }
+    .services-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .service-box {
+        width: 90%;
+    }
+}
+
+
     </style>
 </head>
 <body>
-
     <div class="container">
-        <!-- Header Section -->
         <div class="header">
             <h1>بوابة الوظائف</h1>
         </div>
-
-        <!-- Search Bar Section -->
-    
-
-        <!-- Service Sections -->
+      
         <div class="services-container">
             <div class="service-box">
+                <img src="static/images/go.jpg" alt="البحث عن وظائف">
                 <h3>البحث عن وظائف</h3>
                 <p>اكتشف العروض المتاحة واستعد للمستقبل.</p>
                 <a href="/job-seeker.html" class="btn-primary">ابحث عن وظيفة</a>
             </div>
-          
             <div class="service-box">
+                <img src="/static/images/gh.jpg" alt="نشر عروض عمل">
                 <h3>نشر عروض عمل</h3>
                 <p>شارك فرص عمل شركتك لتوظيف أفضل الكفاءات.</p>
                 <a href="/login-jobs" class="btn-primary">نشر عرض عمل</a>
             </div>
         </div>
     </div>
- 
 </body>
 </html>
