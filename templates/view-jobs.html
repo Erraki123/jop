@@ -186,7 +186,11 @@
 
     <div class="container">
         <h2>عروض العمل المتاحة</h2>
-
+        <form action="{{ url_for('search_jobs') }}" method="get" class="form-inline mb-3">
+            <input type="text" name="q" class="form-control mr-2" placeholder="ابحث عن الوظائف..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-primary">بحث</button>
+        </form>
+        
         <!-- Button Back to Portfolio -->
 <!-- Button Back to Portfolio -->
 <a href="{{ url_for('portfolio') }}" class="btn-back">الرجوع إلى الملف الشخصي</a>

@@ -1,0 +1,157 @@
+
+<style>
+/* Styles généraux */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Titres */
+h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Alertes */
+.alert-warning {
+    background-color: #ffcc00;
+    color: #333;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* Cartes des offres d'emploi */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 18px;
+    padding: 10px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-body {
+    padding: 20px;
+    color: #555;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.card-text {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.card-footer {
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.btn-apply {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-apply:hover {
+    background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        margin-bottom: 10px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+}
+
+/* Bouton de retour */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+
+
+</style>
+{% block content %}
+<div class="container">
+    <h2>نتائج البحث عن "{{ search_query }}"</h2>
+    <a href="{{ url_for('view_jobs') }}" class="btn btn-secondary mt-3">العودة إلى جميع الوظائف</a>
+    <br>
+    <br>
+    {% if jobs %}
+        <div class="row">
+            {% for job in jobs %}
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        {{ job.job_title }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ job.job_title }}</h5>
+                        <p class="card-text">{{ job.job_description[:150] }}...</p>
+                        <p><strong>الموقع:</strong> {{ job.location }}</p>
+                        <p><strong>الراتب:</strong> {{ job.salary }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('apply_job', job_id=job.id) }}" class="btn-apply">التقدم للوظيفة</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="alert alert-warning">لا توجد نتائج مطابقة للبحث.</p>
+    {% endif %}
+
+   
+</div>
+{% endblock %}

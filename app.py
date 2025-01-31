@@ -26,10 +26,9 @@ mail = Mail(app)
 # Secret key for session management
 app.secret_key = os.urandom(24)
 
-# Upload folder configuration
+app.config['IMAGE_UPLOAD_FOLDER'] = 'static/uploads'  # Dossier pour les images
+app.config['CV_UPLOAD_FOLDER'] = 'uploads'  # Dossier pour les CVs (PDF)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
-app.config['UPLOAD_FOLDER'] = 'uploads'  # مسار نسبي لحفظ الملفات
-
 
 
 # Check if a file has an allowed extension
@@ -158,7 +157,7 @@ def dashboard():
             photo_filename = user['photo']
             if photo and allowed_file(photo.filename):
                 photo_filename = secure_filename(photo.filename)
-                photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
+                photo.save(os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], photo_filename))
 
             try:
                 cursor.execute('''UPDATE users 
@@ -382,7 +381,7 @@ def apply_job(job_id):
 
         if resume and allowed_file(resume.filename):
             resume_filename = secure_filename(resume.filename)
-            resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume_filename)
+            resume_path = os.path.join(app.config['CV_UPLOAD_FOLDER'], resume_filename)
             resume.save(resume_path)
 
             try:
@@ -498,6 +497,24 @@ def view_applications(job_id):
         print(f"Error: {err}")
         return "حدث خطأ في قاعدة البيانات", 500
 
+@app.route('/search-jobs', methods=['GET'])
+def search_jobs():
+    search_query = request.args.get('q', '')
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT * FROM jobs
+        WHERE job_title LIKE %s OR job_description LIKE %s
+    """, ('%' + search_query + '%', '%' + search_query + '%'))
+
+    jobs = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+
+    return render_template('search-results.html', jobs=jobs, search_query=search_query)
 
 if __name__ == '__main__':
     app.run(debug=True)
