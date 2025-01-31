@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقديم طلب وظيفة</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        h2 {
+            color: #4e73df;
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .form-control,
+        .form-control-file {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #375aeb;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a636a;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">تقديم طلب وظيفة</h2>
+        
+        <!-- Message flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-{{ messages[0][0] }}">
+                {{ messages[0][1] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Formulaire de demande -->
+        <form action="{{ url_for('apply_job', job_id=job_id) }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="cover_letter">رسالة التغطية</label>
+                <textarea class="form-control" id="cover_letter" name="cover_letter" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="resume">السيرة الذاتية (PDF فقط)</label>
+                <input type="file" class="form-control-file" id="resume" name="resume" accept="application/pdf" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">تقديم الطلب</button>
+        </form>
+
+        <a href="{{ url_for('view_jobs') }}" class="btn btn-secondary mt-3">رجوع إلى الوظائف</a>
+    </div>
+
+    <footer class="text-center">
+        <p>جميع الحقوق محفوظة © 2025</p>
+    </footer>
+</body>
+</html>

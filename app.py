@@ -11,9 +11,10 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # Upload folder configuration
-UPLOAD_FOLDER = 'static/uploads/'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
+app.config['UPLOAD_FOLDER'] = 'uploads'  # مسار نسبي لحفظ الملفات
+
+
 
 # Check if a file has an allowed extension
 def allowed_file(filename):
@@ -225,7 +226,7 @@ def register_employer():
             conn.close()
 
     return render_template('register-employer.html')
-@app.route('/employer-dashboard', methods=['GET', 'POST'])
+@app.route('/employer-dashboard')
 def employer_dashboard():
     if 'employer_id' not in session:
         flash('يرجى تسجيل الدخول أولاً.', 'warning')
@@ -233,11 +234,23 @@ def employer_dashboard():
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
+
+    # جلب الوظائف التي نشرها صاحب العمل
     cursor.execute("SELECT * FROM jobs WHERE employer_id = %s", (session['employer_id'],))
     jobs = cursor.fetchall()
-    conn.close()
 
-    return render_template('employer-dashboard.html', company_name=session['company_name'], jobs=jobs)
+    # جلب طلبات التوظيف
+    cursor.execute("""
+        SELECT applications.*, users.first_name AS user_name, jobs.job_title
+        FROM applications
+        JOIN users ON applications.user_id = users.id
+        JOIN jobs ON applications.job_id = jobs.id
+        WHERE jobs.employer_id = %s
+    """, (session['employer_id'],))
+    applications = cursor.fetchall()
+
+    conn.close()
+    return render_template('employer-dashboard.html', company_name=session['company_name'], jobs=jobs, applications=applications)
 
 
 @app.route('/add-job', methods=['POST'])
@@ -323,37 +336,82 @@ def view_jobs():
     conn.close()
 
     return render_template('view-jobs.html', jobs=jobs)
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('تم تسجيل الخروج بنجاح.', 'info')
+    return redirect(url_for('login'))
 @app.route('/apply-job/<int:job_id>', methods=['GET', 'POST'])
 def apply_job(job_id):
     if 'user_id' not in session:
         flash('يرجى تسجيل الدخول أولاً.', 'warning')
         return redirect(url_for('login'))
 
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
     if request.method == 'POST':
-        # استلام مؤهلات المستخدم مثل السيرة الذاتية
+        cover_letter = request.form.get('cover_letter')
         resume = request.files.get('resume')
-        
+
+        if not cover_letter or not resume:
+            flash('يرجى إدخال رسالة التغطية ورفع السيرة الذاتية.', 'danger')
+            return redirect(url_for('apply_job', job_id=job_id))
+
         if resume and allowed_file(resume.filename):
             resume_filename = secure_filename(resume.filename)
-            resume.save(os.path.join(app.config['UPLOAD_FOLDER'], resume_filename))
+            resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume_filename)
+            resume.save(resume_path)
 
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute('''INSERT INTO applications (user_id, job_id, resume) 
-                              VALUES (%s, %s, %s)''', 
-                           (session['user_id'], job_id, resume_filename))
-            conn.commit()
-            conn.close()
+            try:
+                # حفظ البيانات في قاعدة البيانات
+                cursor.execute("""
+                    INSERT INTO applications (job_id, user_id, cover_letter, resume)
+                    VALUES (%s, %s, %s, %s)
+                """, (job_id, session['user_id'], cover_letter, resume_filename))
+                conn.commit()
 
-            flash('تم التقديم على الوظيفة بنجاح!', 'success')
-            return redirect(url_for('view_jobs'))
+                # إشعار صاحب العمل
+                cursor.execute("""
+                    SELECT employers.email FROM employers 
+                    JOIN jobs ON employers.id = jobs.employer_id
+                    WHERE jobs.id = %s
+                """, (job_id,))
+                employer = cursor.fetchone()
 
+                if employer:
+                    employer_email = employer['email']
+                    flash('تم تقديم طلبك بنجاح! سيتم إشعار الشركة.', 'success')
+                    # هنا يمكنك إرسال بريد إلكتروني لصاحب العمل إذا كنت تستخدم `Flask-Mail`
+                
+                return redirect(url_for('view_jobs'))
+
+            except Error as e:
+                flash(f'حدث خطأ أثناء تقديم الطلب: {e}', 'danger')
+
+        else:
+            flash('يرجى رفع ملف PDF فقط.', 'danger')
+
+    conn.close()
     return render_template('apply-job.html', job_id=job_id)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('تم تسجيل الخروج بنجاح.', 'info')
-    return redirect(url_for('login'))
+@app.route('/view-applications/<int:job_id>')
+def view_applications(job_id):
+    if 'employer_id' not in session:
+        flash('يرجى تسجيل الدخول أولاً.', 'warning')
+        return redirect(url_for('login_employer'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('''
+        SELECT applications.*, users.first_name, users.last_name, users.email 
+        FROM applications 
+        JOIN users ON applications.user_id = users.id 
+        WHERE job_id = %s
+    ''', (job_id,))
+    applications = cursor.fetchall()
+    conn.close()
+
+    return render_template('view-applications.html', applications=applications)
 if __name__ == '__main__':
     app.run(debug=True)

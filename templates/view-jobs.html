@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الشركة</title>
+    <title>عروض العمل المتاحة</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
@@ -26,10 +26,11 @@
             margin-top: 50px;
         }
 
-        h2, h3 {
+        h2 {
             color: #4e73df;
-            text-align: center;
             font-size: 30px;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .table {
@@ -51,15 +52,13 @@
         }
 
         .table td a {
-            color: #fff;
+            color: #4e73df;
             text-decoration: none;
             font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 5px;
         }
 
         .table td a:hover {
-            opacity: 0.8;
+            text-decoration: underline;
         }
 
         .table tr:nth-child(even) {
@@ -68,33 +67,6 @@
 
         .table tr:hover {
             background-color: #f1f1f1;
-        }
-
-        .btn-warning {
-            background-color: #f39c12;
-            border: none;
-        }
-
-        .btn-warning:hover {
-            background-color: #e67e22;
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-info {
-            background-color: #3498db;
-            border: none;
-        }
-
-        .btn-info:hover {
-            background-color: #2980b9;
         }
 
         footer {
@@ -107,13 +79,24 @@
         footer p {
             margin: 0;
         }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: #375aeb;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         {% block content %}
-        <h2>لوحة تحكم الشركة</h2>
-        <h3>عروض العمل</h3>
+        <h2>عروض العمل المتاحة</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -132,9 +115,7 @@
                     <td>{{ job.location }}</td>
                     <td>{{ job.salary }}</td>
                     <td>
-                        <a href="{{ url_for('edit_job', job_id=job.id) }}" class="btn btn-warning btn-sm">تعديل</a>
-                        <a href="{{ url_for('delete_job', job_id=job.id) }}" class="btn btn-danger btn-sm">حذف</a>
-                        <a href="{{ url_for('view_applications', job_id=job.id) }}" class="btn btn-info btn-sm">عرض الطلبات</a>
+                        <a href="{{ url_for('apply_job', job_id=job.id) }}" class="btn btn-primary">التقدم للوظيفة</a>
                     </td>
                 </tr>
                 {% endfor %}
