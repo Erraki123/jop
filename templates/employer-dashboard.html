@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
 body {
-    background: linear-gradient(135deg, rgba(251, 255, 12, 0.8), rgba(4, 41, 253, 0.8));
+    background: linear-gradient(135deg, rgba(255, 255, 253, 0.8), rgba(104, 104, 104, 0.8));
     font-family: 'Arial', sans-serif;
     color: #fff;
     margin: 0;
@@ -158,8 +158,19 @@ h1, h3 {
 
 
     </style>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم صاحب العمل</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Your existing styles remain unchanged */
+    </style>
 </head>
 <body>
+
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="display-4">مرحبًا، {{ company_name }}</h1>
@@ -168,8 +179,17 @@ h1, h3 {
         <h3>إعلانات الوظائف</h3>
 
         <a href="#" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addJobModal">إضافة وظيفة جديدة</a>
-
-
+        
+        <!-- View Profiles Button -->
+        <a href="{{ url_for('view_profiles') }}" class="btn btn-info mb-3">عرض الملفات الشخصية</a>
+        <br>
+        <br>
+ <form method="GET" action="{{ url_for('employer_dashboard') }}" class="d-flex mb-4">
+        <input type="text" class="form-control me-2" name="job_title" placeholder="عنوان الوظيفة" value="{{ request.args.get('job_title', '') }}">
+        <input type="text" class="form-control me-2" name="job_description" placeholder="الوصف" value="{{ request.args.get('job_description', '') }}">
+        <input type="text" class="form-control me-2" name="location" placeholder="الموقع" value="{{ request.args.get('location', '') }}">
+        <button type="submit" class="btn btn-success">بحث</button>
+    </form>
         <!-- Modal for adding a job -->
         <div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -202,7 +222,6 @@ h1, h3 {
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="container">
@@ -238,3 +257,5 @@ h1, h3 {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+>
+        

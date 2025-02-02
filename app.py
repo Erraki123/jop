@@ -5,9 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
 
-from flask import Flask, render_template, request, redirect, url_for
+
 from flask_mail import Mail, Message
-import mysql.connector
+
 
 app = Flask(__name__)
 
@@ -125,13 +125,18 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/portfolio')
+@app.route('/portfolio', methods=['GET', 'POST'])
 def portfolio():
     if 'user_id' not in session:
         flash('يرجى تسجيل الدخول أولاً.', 'warning')
         return redirect(url_for('login'))
 
     print(session)  # طباعة محتويات الجلسة لمراجعتها
+    if request.method == 'POST':
+        # Handle the POST logic here (e.g. saving data)
+        flash('تم إرسال البيانات بنجاح.', 'success')
+        return redirect(url_for('portfolio'))
+
     return render_template('portfolio.html', user=session)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
@@ -150,9 +155,10 @@ def dashboard():
             first_name = request.form.get('first_name')
             last_name = request.form.get('last_name')
             email = request.form.get('email')
-            phone = request.form.get('phone')  # Récupérer le téléphone
-            description = request.form.get('description', '')  # Récupérer la description
+            phone = request.form.get('phone')
+            description = request.form.get('description', '')
             photo = request.files.get('photo')
+            is_published = request.form.get('is_published') == 'on'  # تحقق مما إذا كان المستخدم قد حدد النشر
 
             photo_filename = user['photo']
             if photo and allowed_file(photo.filename):
@@ -161,18 +167,20 @@ def dashboard():
 
             try:
                 cursor.execute('''UPDATE users 
-                                  SET first_name = %s, last_name = %s, email = %s, phone = %s, description = %s, photo = %s 
+                                  SET first_name = %s, last_name = %s, email = %s, phone = %s, description = %s, 
+                                      photo = %s, is_published = %s
                                   WHERE id = %s''', 
-                               (first_name, last_name, email, phone, description, photo_filename, session['user_id']))
+                               (first_name, last_name, email, phone, description, photo_filename, is_published, session['user_id']))
                 conn.commit()
 
-                # Mettre à jour la session avec les nouvelles informations
+                # تحديث البيانات في الجلسة
                 session['first_name'] = first_name
                 session['last_name'] = last_name
                 session['email'] = email
-                session['phone'] = phone  # Mettre à jour le téléphone dans la session
+                session['phone'] = phone
                 session['photo'] = photo_filename
                 session['description'] = description
+                session['is_published'] = is_published
                 flash('تم تحديث البيانات بنجاح!', 'success')
 
                 return redirect(url_for('portfolio'))
@@ -180,12 +188,12 @@ def dashboard():
             except Error as e:
                 flash(f'خطأ أثناء تحديث البيانات: {e}', 'danger')
 
-        conn.close()
+        conn.close()  # إغلاق الاتصال بقاعدة البيانات بعد استخدامه
         return render_template('dashboard.html', user=user)
+
     else:
         flash('خطأ في الاتصال بقاعدة البيانات.', 'danger')
         return redirect(url_for('login'))
-
 
 
 @app.route('/login-jobs', methods=['GET', 'POST'])
@@ -241,7 +249,7 @@ def register_employer():
             conn.close()
 
     return render_template('register-employer.html')
-@app.route('/employer-dashboard')
+@app.route('/employer-dashboard', methods=['GET', 'POST'])
 def employer_dashboard():
     if 'employer_id' not in session:
         flash('يرجى تسجيل الدخول أولاً.', 'warning')
@@ -250,11 +258,29 @@ def employer_dashboard():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # جلب الوظائف التي نشرها صاحب العمل
-    cursor.execute("SELECT * FROM jobs WHERE employer_id = %s", (session['employer_id'],))
+    # Récupération des critères de recherche
+    job_title = request.args.get('job_title', '')
+    job_description = request.args.get('job_description', '')
+    location = request.args.get('location', '')
+
+    # Requête SQL avec des filtres si des critères sont fournis
+    query = "SELECT * FROM jobs WHERE employer_id = %s"
+    filters = [session['employer_id']]
+
+    if job_title:
+        query += " AND job_title LIKE %s"
+        filters.append(f"%{job_title}%")
+    if job_description:
+        query += " AND job_description LIKE %s"
+        filters.append(f"%{job_description}%")
+    if location:
+        query += " AND location LIKE %s"
+        filters.append(f"%{location}%")
+
+    cursor.execute(query, tuple(filters))
     jobs = cursor.fetchall()
 
-    # جلب طلبات التوظيف
+    # Récupération des demandes d'emploi
     cursor.execute("""
         SELECT applications.*, users.first_name AS user_name, jobs.job_title
         FROM applications
@@ -266,6 +292,7 @@ def employer_dashboard():
 
     conn.close()
     return render_template('employer-dashboard.html', company_name=session['company_name'], jobs=jobs, applications=applications)
+
 @app.route('/add-job', methods=['POST'])
 def add_job():
     if 'employer_id' not in session:
@@ -416,18 +443,15 @@ def apply_job(job_id):
     conn.close()
     return render_template('apply-job.html', job_id=job_id)
 from flask import flash, redirect, url_for, render_template
-
-@app.route('/handle-application/<int:application_id>/accept', methods=['POST'])
-
-def handle_application(application_id):
+@app.route('/handle-application/<int:application_id>/<string:action>', methods=['POST'])
+def handle_application(application_id, action):
     try:
-        # الاتصال بقاعدة البيانات
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # استعلام للحصول على بيانات الطلب مع البريد الإلكتروني من جدول users
+        # Obtenir les détails de la candidature avec l'email de l'utilisateur et job_id
         cursor.execute("""
-            SELECT a.*, u.email
+            SELECT a.*, u.email, a.job_id
             FROM applications a
             JOIN users u ON a.user_id = u.id
             WHERE a.id = %s
@@ -435,51 +459,67 @@ def handle_application(application_id):
         application = cursor.fetchone()
 
         if application:
-            # تحديث حالة الطلب إلى "تم قبوله"
-            cursor.execute("""
-                UPDATE applications
-                SET status = 'تم قبوله'
-                WHERE id = %s
-            """, (application_id,))
-            conn.commit()
+            job_id = application['job_id']  # Sauvegarder le job_id avant toute action
 
-            # إرسال بريد إلكتروني إلى العامل
-            user_email = application['email']
-            subject = "تحديث حول طلبك"
-            body = "تم قبول ملفك وهو قيد الدراسة حاليًا."
+            if action == 'accept':
+                # Mettre à jour le statut à "Accepté"
+                cursor.execute("""
+                    UPDATE applications
+                    SET status = 'Accepté'
+                    WHERE id = %s
+                """, (application_id,))
+                conn.commit()
 
-            msg = Message(subject, recipients=[user_email])
-            msg.body = body
-            try:
-                mail.send(msg)
-                # إضافة رسالة فلاش عند النجاح
-                flash(f"تم إرسال البريد الإلكتروني إلى {user_email} بنجاح", 'success')
-            except Exception as e:
-                flash(f"خطأ في إرسال البريد الإلكتروني: {str(e)}", 'error')
+                # Envoyer un email de confirmation
+                user_email = application['email']
+                subject = "Mise à jour sur votre candidature"
+                body = "Félicitations ! Votre candidature a été acceptée."
 
-            # إغلاق الاتصال بقاعدة البيانات
+                msg = Message(subject, recipients=[user_email])
+                msg.body = body
+                try:
+                    mail.send(msg)
+                    flash(f"L'email a été envoyé à {user_email} avec succès", 'success')
+                except Exception as e:
+                    flash(f"Erreur d'envoi de l'email: {str(e)}", 'error')
+
+            elif action == 'delete':
+                # Supprimer la candidature
+                cursor.execute("""
+                    DELETE FROM applications
+                    WHERE id = %s
+                """, (application_id,))
+                conn.commit()
+
+                flash("La candidature a été supprimée", 'success')
+
             cursor.close()
             conn.close()
 
-            return redirect(url_for('view_applications', job_id=application['job_id']))
+            # Utilisation de url_for pour générer correctement l'URL
+            return redirect(url_for('view_applications', job_id=job_id))
+
+        else:
+            flash("La candidature n'a pas été trouvée.", 'error')
+            return redirect(url_for('view_applications', job_id=job_id))
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
-        flash("حدث خطأ في قاعدة البيانات", 'error')
-        return redirect(url_for('view_applications', job_id=application['job_id']))
+        flash("Erreur dans la base de données", 'error')
+        return redirect(url_for('view_applications', job_id=job_id))
+
     except Exception as e:
         print(f"Error: {e}")
-        flash("حدث خطأ غير متوقع", 'error')
-        return redirect(url_for('view_applications', job_id=application['job_id']))
+        flash("Erreur inattendue", 'error')
+        return redirect(url_for('view_applications', job_id=job_id))
 
 @app.route('/view-applications/<int:job_id>')
 def view_applications(job_id):
     try:
-        # الاتصال بقاعدة البيانات
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # استعلام لجلب جميع الطلبات للوظيفة المحددة
+        # Récupérer toutes les candidatures pour un job spécifique
         cursor.execute("""
             SELECT a.*, u.email
             FROM applications a
@@ -491,12 +531,11 @@ def view_applications(job_id):
         cursor.close()
         conn.close()
 
-        return render_template('view-applications.html', applications=applications)
+        return render_template('view-applications.html', applications=applications, job_id=job_id)
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
-        return "حدث خطأ في قاعدة البيانات", 500
-
+        return "Erreur dans la base de données", 500
 @app.route('/search-jobs', methods=['GET'])
 def search_jobs():
     search_query = request.args.get('q', '')
@@ -515,6 +554,125 @@ def search_jobs():
     conn.close()
 
     return render_template('search-results.html', jobs=jobs, search_query=search_query)
+@app.route('/publish-profile', methods=['POST'])
+def publish_profile():
+    # التأكد من أن المستخدم مسجل دخوله
+    if 'user_id' not in session:
+        flash('يرجى تسجيل الدخول أولاً.', 'warning')
+        return redirect(url_for('login'))
 
+    user_id = session['user_id']
+
+    # الاتصال بقاعدة البيانات
+    conn = get_db_connection()
+    if conn is None:
+        flash('حدث خطأ في الاتصال بقاعدة البيانات.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # تحديث حالة النشر في قاعدة البيانات
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET is_published = TRUE WHERE id = %s", (user_id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    flash('تم نشر بروفايلك بنجاح!', 'success')
+    return redirect(url_for('portfolio'))  # العودة إلى لوحة التحكم
+@app.route('/view-profiles', methods=['GET'])
+def view_profiles():
+    # السماح لأصحاب العمل بمشاهدة الملفات الشخصية أيضًا
+    if 'user_id' not in session and 'employer_id' not in session:
+        flash('يرجى تسجيل الدخول.', 'warning')
+        return redirect(url_for('login'))
+
+    search_query = request.args.get('search', '')  # الحصول على الاستعلام من GET
+    
+    # الاتصال بقاعدة البيانات
+    conn = get_db_connection()
+    if conn is None:
+        flash('حدث خطأ في الاتصال بقاعدة البيانات.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    cursor = conn.cursor(dictionary=True)
+
+    # تعديل الاستعلام ليشمل البحث
+    if search_query:
+        # البحث عن المستخدمين بناءً على الاسم أو الوصف
+        cursor.execute("SELECT * FROM users WHERE (first_name LIKE %s OR last_name LIKE %s OR description LIKE %s) AND is_published = TRUE", 
+                       ('%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
+    else:
+        # إذا لم يكن هناك استعلام بحث، إظهار جميع المستخدمين
+        cursor.execute("SELECT * FROM users WHERE is_published = TRUE")
+    
+    users = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template('view_profiles.html', users=users, search_query=search_query)
+@app.route('/delete-application/<int:application_id>', methods=['POST'])
+def delete_application(application_id):
+    try:
+        # الاتصال بقاعدة البيانات
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # حذف الطلب من قاعدة البيانات
+        cursor.execute("""
+            DELETE FROM applications WHERE id = %s
+        """, (application_id,))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        flash("تم حذف الطلب بنجاح", 'success')
+        return redirect(url_for('view_applications'))
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        flash("حدث خطأ في قاعدة البيانات أثناء الحذف", 'error')
+        return redirect(url_for('view_applications'))
+    except Exception as e:
+        print(f"Error: {e}")
+        flash("حدث خطأ غير متوقع", 'error')
+        return redirect(url_for('view_applications'))
+@app.route('/about')
+def about():
+    return render_template('about.html')
+@app.route('/view-profile/<int:user_id>', methods=['GET'])
+def view_profile_detail(user_id):
+    # التأكد من أن المستخدم مسجل دخوله
+    if 'user_id' not in session and 'employer_id' not in session:
+        flash('يرجى تسجيل الدخول.', 'warning')
+        return redirect(url_for('login'))
+    
+    # الاتصال بقاعدة البيانات
+    conn = get_db_connection()
+    if conn is None:
+        flash('حدث خطأ في الاتصال بقاعدة البيانات.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    cursor = conn.cursor(dictionary=True)
+
+    # الحصول على تفاصيل المستخدم
+    cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+    user = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if user:
+        return render_template('profile_detail.html', user=user)
+    else:
+        flash('المستخدم غير موجود.', 'danger')
+        return redirect(url_for('dashboard'))
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 if __name__ == '__main__':
     app.run(debug=True)
+

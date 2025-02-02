@@ -135,9 +135,11 @@
                             <form action="{{ url_for('handle_application', application_id=application.id, action='accept') }}" method="POST">
                                 <button type="submit" class="btn btn-success">قبول</button>
                             </form>
-                            <form action="{{ url_for('handle_application', application_id=application.id, action='reject') }}" method="POST">
-                                <button type="submit" class="btn btn-danger">رفض</button>
+                            
+                            <form action="{{ url_for('delete_application', application_id=application.id) }}" method="POST">
+                                <button type="submit" class="btn btn-warning">مسح</button>
                             </form>
+                            
                         </div>
                     </div>
                 </div>

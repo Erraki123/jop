@@ -1,0 +1,201 @@
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Styles globaux */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header */
+.header {
+    background-color: #000000;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .logo h1 {
+    color: white;
+    font-size: 24px;
+}
+
+.header nav ul {
+    list-style: none;
+    display: flex;
+}
+
+.header nav ul li {
+    margin: 0 15px;
+}
+
+.header nav ul li a {
+    color: white;
+    font-size: 16px;
+}
+
+/* Section Profile */
+.profile-container {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h2 {
+    font-size: 28px;
+    color: #333;
+}
+
+.profile-header p {
+    font-size: 18px;
+    color: #666;
+}
+
+.profile-details {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: right;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.text-muted {
+    color: #888;
+}
+
+/* Footer */
+footer {
+            background-color: #000000; /* Footer noir */
+            height: 60px;
+            width: 100%;
+            text-align: center;
+            padding-top: 15px;
+            position: fixed;
+            bottom: 0;
+        }
+        /* Style pour le lien de retour au profil */
+.btn-back-profile {
+    display: inline-block;
+    background-color: #0026ff; /* Couleur similaire à Fiverr */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: 20px;
+}
+
+.btn-back-profile:hover {
+    background-color: #1100ff; /* Couleur de survol */
+    transform: translateY(-3px); /* Légère élévation au survol */
+}
+
+.btn-back-profile:active {
+    background-color: #0059ffdc; /* Couleur au clic */
+    transform: translateY(1px); /* Effet de pression */
+}
+
+.btn-back-profile i {
+    margin-left: 8px;
+    font-size: 18px;
+}
+
+</style>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <header class="header">
+        <div class="logo">
+            
+        </div>
+        <nav>
+          
+        </nav>
+    </header>
+    <br>
+    <br>
+    <a href="{{ url_for('view_profiles') }}" class="btn-back-profile">
+        <span>الرجوع إلى الملف الشخصي</span>
+        <i class="fas fa-arrow-left"></i> <!-- Icône flèche vers la gauche -->
+    </a>
+    
+    <section class="profile-container">
+        <div class="profile-header">
+            <h2>الملف الشخصي</h2>
+            <p>تفاصيل المستخدم</p>
+        </div>
+
+        <div class="profile-details">
+            <table class="table">
+                <tr>
+                    <th>الاسم الكامل</th>
+                    <td>{{ user['first_name'] }} {{ user['last_name'] }}</td>
+                </tr>
+                <tr>
+                    <th>البريد الإلكتروني</th>
+                    <td>{{ user['email'] }}</td>
+                </tr>
+                <tr>
+                    <th>رقم الهاتف</th>
+                    <td>{{ session.get('phone', 'لم يتم إضافة رقم الهاتف') }}</td>
+                </tr>
+                <tr>
+                    <th>الوصف</th>
+                    <td>
+                        {% if user.get('description') %}
+                            {{ user['description'] }}
+                        {% else %}
+                            <span class="text-muted">لم يتم إضافة وصف بعد.</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 منصة Fiverr. جميع الحقوق محفوظة.</p>
+    </footer>
+</body>
+</html>
