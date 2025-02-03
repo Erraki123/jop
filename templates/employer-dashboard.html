@@ -156,7 +156,51 @@ h1, h3 {
     text-decoration: underline;
 }
 
+/* Style de base pour la liste des messages */
+.messages {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
 
+/* Style de base pour chaque message */
+.message {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+/* Style pour les messages de succès */
+.message.success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+/* Style pour les messages d'erreur */
+.message.error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Style pour les messages d'avertissement */
+.message.warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+/* Style pour les messages d'information */
+.message.info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
     </style>
 <!DOCTYPE html>
 <html lang="ar">
@@ -176,6 +220,15 @@ h1, h3 {
             <h1 class="display-4">مرحبًا، {{ company_name }}</h1>
             <a href="{{ url_for('home') }}" class="btn btn-outline-danger">تسجيل الخروج</a>
         </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="messages">
+                {% for category, message in messages %}
+                <li class="message {{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
         <h3>إعلانات الوظائف</h3>
 
         <a href="#" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addJobModal">إضافة وظيفة جديدة</a>
