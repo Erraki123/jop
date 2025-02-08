@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديث معلومات المسؤول</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>تحديث المعلومات</h2>
+    <form method="POST">
+        <label for="email">البريد الإلكتروني الجديد:</label>
+        <input type="email" name="email" required value="{{ admin.email }}">
+        
+        <label for="password">كلمة المرور الجديدة:</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">تحديث</button>
+    </form>
+    
+    <a href="{{ url_for('admin_dashboard') }}">العودة إلى لوحة التحكم</a>
+</body>
+</html>

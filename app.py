@@ -194,6 +194,61 @@ def dashboard():
     else:
         flash('خطأ في الاتصال بقاعدة البيانات.', 'danger')
         return redirect(url_for('login'))
+@app.route('/show-employer')
+def show_employer():
+    if 'employer_id' not in session:
+        flash('يرجى تسجيل الدخول أولاً.', 'warning')
+        return redirect(url_for('login_employer'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Récupérer les informations de l'employeur basé sur l'ID
+    cursor.execute("SELECT * FROM employers WHERE id = %s", (session['employer_id'],))
+    employer = cursor.fetchone()
+    
+    conn.close()
+    
+    if employer:
+        return render_template('show-employer.html', employer=employer)
+    else:
+        flash('لم يتم العثور على معلومات صاحب العمل.', 'danger')
+        return redirect(url_for('employer_dashboard'))
+
+@app.route('/update-employer', methods=['GET', 'POST'])
+def update_employer():
+    if 'employer_id' not in session:
+        flash('يرجى تسجيل الدخول أولاً.', 'warning')
+        return redirect(url_for('login_employer'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == 'POST':
+        company_name = request.form.get('company_name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        address = request.form.get('address')
+        description = request.form.get('description')
+
+        # Update employer data
+        cursor.execute("""
+            UPDATE employers
+            SET company_name = %s, email = %s, phone = %s, address = %s, description = %s
+            WHERE id = %s
+        """, (company_name, email, phone, address, description, session['employer_id']))
+        conn.commit()
+        conn.close()
+
+        flash('تم تحديث المعلومات بنجاح!', 'success')
+        return redirect(url_for('employer_dashboard'))
+
+    # Fetch current employer data
+    cursor.execute("SELECT * FROM employers WHERE id = %s", (session['employer_id'],))
+    employer = cursor.fetchone()
+    conn.close()
+
+    return render_template('update-employer.html', employer=employer)
 
 
 @app.route('/login-jobs', methods=['GET', 'POST'])
@@ -673,6 +728,148 @@ def view_profile_detail(user_id):
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+
+
+
+@app.route('/admin-dashboard', methods=['GET', 'POST'])
+def admin_dashboard():
+    if 'admin_id' not in session:
+        flash('يرجى تسجيل الدخول أولاً.', 'warning')
+        return redirect(url_for('admin_login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT COUNT(*) AS num_users FROM users")
+    user_count = cursor.fetchone()['num_users']
+
+    cursor.execute("SELECT COUNT(*) AS num_employers FROM employers")
+    employer_count = cursor.fetchone()['num_employers']
+
+    # Gestion de la recherche
+    search_query = request.form.get('search_query', '').strip()
+    users, employers = [], []
+
+    if search_query:
+        cursor.execute("SELECT * FROM users WHERE first_name LIKE %s OR last_name LIKE %s", 
+                       (f"%{search_query}%", f"%{search_query}%"))
+        users = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM employers WHERE company_name LIKE %s", 
+                       (f"%{search_query}%",))
+        employers = cursor.fetchall()
+    else:
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM employers")
+        employers = cursor.fetchall()
+
+    if request.method == 'POST':
+        delete_user_id = request.form.get('delete_user_id')
+        delete_employer_id = request.form.get('delete_employer_id')
+
+        if delete_user_id:
+            cursor.execute("DELETE FROM users WHERE id = %s", (delete_user_id,))
+            conn.commit()
+            flash('تم حذف حساب العامل بنجاح!', 'danger')
+
+        if delete_employer_id:
+            cursor.execute("DELETE FROM employers WHERE id = %s", (delete_employer_id,))
+            conn.commit()
+            flash('تم حذف حساب الشركة بنجاح!', 'danger')
+
+    conn.close()
+    return render_template('admin-dashboard.html', 
+                           user_count=user_count, 
+                           employer_count=employer_count, 
+                           users=users, 
+                           employers=employers, 
+                           search_query=search_query)
+
+@app.route('/admin-login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM admin WHERE email = %s", (email,))
+        admin = cursor.fetchone()
+        conn.close()
+
+        if admin and check_password_hash(admin['password'], password):
+            session['admin_id'] = admin['id']
+            flash('تم تسجيل الدخول بنجاح!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('بيانات تسجيل الدخول غير صحيحة.', 'danger')
+
+    return render_template('admin-login.html')
+@app.route('/admin-register', methods=['GET', 'POST'])
+def admin_register():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # تحقق من أن البريد الإلكتروني وكلمة المرور ليسا فارغين
+        if not email or not password:
+            flash("البريد الإلكتروني وكلمة المرور مطلوبان.", 'danger')
+            return render_template('admin-register.html')
+
+        # تشفير كلمة المرور قبل تخزينها في قاعدة البيانات
+        hashed_password = generate_password_hash(password)
+
+        # الاتصال بقاعدة البيانات لإضافة الحساب
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO admin (email, password) VALUES (%s, %s)", (email, hashed_password))
+        conn.commit()
+        conn.close()
+
+        flash("تم إنشاء حسابك بنجاح. يمكنك الآن تسجيل الدخول.", 'success')
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin-register.html')
+
+
+    return render_template('contact.html')
+@app.route('/admin-update', methods=['GET', 'POST'])
+def admin_update():
+    if 'admin_id' not in session:
+        flash('يرجى تسجيل الدخول أولاً.', 'warning')
+        return redirect(url_for('admin_login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # جلب بيانات المسؤول الحالي
+    cursor.execute("SELECT * FROM admin WHERE id = %s", (session['admin_id'],))
+    admin = cursor.fetchone()
+
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if not email or not password:
+            flash("البريد الإلكتروني وكلمة المرور مطلوبان.", 'danger')
+            return redirect(url_for('admin_update'))
+
+        hashed_password = generate_password_hash(password)
+
+        # تحديث المعلومات في قاعدة البيانات
+        cursor.execute("UPDATE admin SET email = %s, password = %s WHERE id = %s", 
+                       (email, hashed_password, session['admin_id']))
+        conn.commit()
+        conn.close()
+
+        flash("تم تحديث معلوماتك بنجاح.", 'success')
+        return redirect(url_for('admin_dashboard'))
+
+    conn.close()
+    return render_template('admin-update.html', admin=admin)
+
 if __name__ == '__main__':
     app.run(debug=True)
-

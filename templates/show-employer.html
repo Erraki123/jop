@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معلومات صاحب العمل</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">معلومات صاحب العمل</h2>
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>اسم الشركة</th>
+                        <td>{{ employer['company_name'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>البريد الإلكتروني</th>
+                        <td>{{ employer['email'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>رقم الهاتف</th>
+                        <td>{{ employer['phone'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>عنوان الشركة</th>
+                        <td>{{ employer['address'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>وصف الشركة</th>
+                        <td>{{ employer['description'] }}</td>
+                    </tr>
+                </table>
+                <a href="{{ url_for('update_employer') }}" class="btn btn-primary">تحديث المعلومات</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

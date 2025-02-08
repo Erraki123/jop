@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة التسجيل - المشرف</title>
+    <link rel="stylesheet" href="path/to/bootstrap.css">
+</head>
+<body>
+    <div class="container">
+        <h2>تسجيل المشرف</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="alert">
+            {% for category, message in messages %}
+                <li class="alert-{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">تسجيل</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('admin_login') }}">هل لديك حساب؟ سجل الدخول هنا</a>
+    </div>
+
+    <script src="path/to/bootstrap.js"></script>
+</body>
+</html>
