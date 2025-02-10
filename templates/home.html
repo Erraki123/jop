@@ -1,197 +1,278 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة الوظائف</title>
-    <link rel="stylesheet" href="static/css/style.css">
+    <title>منصة التوظيف</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <h2 class="logo">وظائف<span>+</span></h2>
+            <ul class="nav-links">
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/about">من نحن</a></li>
+                <li><a href="/contact">اتصل بنا</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>مرحبًا بك في منصتنا</h1>
+            <p>اكتشف الوظائف المتاحة أو قم بنشر عروض العمل بكل سهولة</p>
+            <a href="#services" id="startButton" class="btn">ابدأ الآن</a>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="service-box">
+            <img src="/static/images/go.jpg" alt="Search Jobs">
+            <h3>البحث عن وظائف</h3>
+            <p>اكتشف العروض المتاحة واستعد لمستقبل مشرق.</p>
+            <small>يمكنك تصفح الوظائف بسهولة والتقدم مباشرة.</small>
+            <a href="/job-seeker.html" class="btn">ابحث عن وظيفة</a>
+        </div>
+        <div class="service-box">
+            <img src="/static/images/gh.jpg" alt="Post Job">
+            <h3>نشر عروض عمل</h3>
+            <p>انشر فرص العمل واجذب المرشحين المناسبين بسهولة.</p>
+            <small>توفر لك منصتنا أدوات فعالة لاختيار الموظفين المثاليين.</small>
+            <a href="/login-jobs" class="btn">انشر وظيفة</a>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById("startButton").addEventListener("click", function(event) {
+            event.preventDefault(); // منع السلوك الافتراضي للرابط
+            const servicesSection = document.getElementById("services");
+            
+            // تحريك الصفحة للأسفل بسلاسة
+            servicesSection.scrollIntoView({ behavior: "smooth" });
+
+            // إظهار الخدمات بتأثير انزلاقي
+            servicesSection.classList.add("show");
+        });
+    </script>
+
     <style>
-        /* Styles généraux */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: rgb(163, 163, 163); /* Fond blanc pour toute la page */
-            color: black; /* Texte en noir pour contraste */
+        /* Reset */
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            box-sizing: border-box;
+            font-family: "Arial", sans-serif;
+        }
+
+        body {
+            text-align: center;
+            color: white;
+            scroll-behavior: smooth;
         }
 
         /* Navbar */
         .navbar {
-            background-color: #000000; /* Navbar noire */
+            background: #007bff; 
             padding: 15px 0;
+            position: fixed;
             width: 100%;
-            text-align: right;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
         }
-        .navbar-nav .nav-link {
-            color: #ffffff; /* Jaune vif pour les liens */
-            font-size: 100%;
-            margin: 0 15px;
-            text-decoration: none;
+
+        .container {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
             font-weight: bold;
         }
-        .navbar-nav .nav-link:hover {
+
+        .logo span {
+            color: #ffcc00;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links li {
+            display: inline;
+        }
+
+        .nav-links a {
+            text-decoration: none;
             color: white;
-            background-color: #333;
-            border-radius: 5px;
+            font-size: 18px;
+            transition: 0.3s;
         }
 
-        /* Contenu principal */
-        
-        .search-container {
+        .nav-links a:hover {
+            color: #ffcc00;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: url('https://source.unsplash.com/1600x900/?job,office') center/cover no-repeat;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        /* Conteneur des services avec effet futuriste */
-        .services-container {
-            display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            flex-wrap: wrap;
+            position: relative;
         }
 
-        .service-box {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 15px;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .service-box:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
-        }
-
-        .service-box img {
+        .overlay {
+            position: absolute;
             width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 10px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
             margin-bottom: 10px;
         }
 
-        .service-box h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: rgb(255, 255, 255);
-        }
-
-        .service-box p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.89);
+        .hero p {
+            font-size: 20px;
             margin-bottom: 20px;
         }
 
-        /* Footer Styles */
-        footer {
-            background-color: #000000; /* Footer noir */
-            height: 60px;
-            width: 100%;
-            text-align: center;
-            padding-top: 15px;
-            position: fixed;
-            bottom: 0;
-        }
-
-        footer p {
-            margin: 0;
-            color: white;
-            font-size: 16px;
-        }
-
-        /* Bouton principal */
-        .btn-primary {
-            display: inline-block;
-            background: linear-gradient(135deg, #0059ff, #0026a3);
-            color: white;
+        .btn {
+            background: #ffcc00;
+            color: black;
             padding: 12px 25px;
-            border: 2px solid #0059ff;
-            border-radius: 50px;
             text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0, 89, 255, 0.5);
-            transition: all 0.3s ease-in-out;
-            cursor: pointer;
+            font-size: 20px;
+            border-radius: 5px;
+            transition: 0.3s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #0026a3, #000d66);
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 89, 255, 0.6);
-            border-color: #0026a3;
+        .btn:hover {
+            background: #ffaa00;
+            box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-primary:active {
-            transform: scale(1);
-            box-shadow: 0 4px 10px rgba(0, 89, 255, 0.4);
+        .services {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 50px 20px;
+        margin-top: 20px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .services.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .service-box {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .service-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .service-box img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+        border-radius: 50%;
+    }
+
+    .service-box h3 {
+        color: #007bff;
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+
+    .service-box p {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .service-box small {
+        font-size: 14px;
+        color: gray;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+    .btn:hover {
+        background: #0056b3;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .services {
+            flex-direction: column;
+            align-items: center;
         }
+    }
 
-        /* Mode Responsive */
-        @media screen and (max-width: 768px) {
-            .search-box {
-                width: 100%;
-            }
-
-            .services-container {
+        /* Responsive */
+        @media (max-width: 768px) {
+            .services {
                 flex-direction: column;
                 align-items: center;
             }
 
-            .service-box {
-                width: 90%;
+            .nav-links {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links li {
+                margin: 10px 0;
             }
         }
-
     </style>
-</head>
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <div class="navbar-nav">
-                <a class="nav-link" href="{{ url_for('home') }}">الرئيسية</a>
-                <a class="nav-link" href="{{ url_for('about') }}">حول</a>
-                <a class="nav-link" href="">اتصل بنا</a>
-            </div>
-        </div>
-    </nav>
-
-    
-        <div class="services-container">
-            <div class="service-box">
-                <img src="static/images/go.jpg" alt="البحث عن وظائف">
-                <h3>البحث عن وظائف</h3>
-                <p>اكتشف العروض المتاحة واستعد للمستقبل.</p>
-                <a href="/job-seeker.html" class="btn-primary">ابحث عن وظيفة</a>
-            </div>
-            <div class="service-box">
-                <img src="/static/images/gh.jpg" alt="نشر عروض عمل">
-                <h3>نشر عروض عمل</h3>
-                <p>شارك فرص عمل شركتك لتوظيف أفضل الكفاءات.</p>
-                <a href="/login-jobs" class="btn-primary">نشر عرض عمل</a>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>حقوق الطبع والنشر &copy; 2025 جميع الحقوق محفوظة</p>
-    </footer>
 
 </body>
 </html>
+

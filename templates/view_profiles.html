@@ -56,47 +56,52 @@
 
 /* Style pour les cartes de profils */
 .card.glass-card {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    padding: 10px;
 }
 
 .card.glass-card:hover {
-    transform: translateY(-5px);
+    transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .card-img-top {
-    width: 100%;
-    height: auto;
-    border-bottom: 1px solid #ddd;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 10px auto;
 }
 
 .card-body {
-    padding: 15px;
+    padding: 10px;
 }
 
 .card-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     color: #333;
 }
 
 .card-text {
-    color: #555;
+    color: #666;
     font-size: 14px;
-}
-
-.card-text strong {
-    color: #007bff;
+    max-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .card-body .btn {
     background-color: #007bff;
     color: white;
-    padding: 8px 16px;
+    padding: 6px 12px;
+    font-size: 14px;
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.3s ease;
@@ -140,25 +145,17 @@
         {% if users %}
             <div class="row">
                 {% for user in users %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card glass-card">
-                            <img src="{{ url_for('static', filename='uploads/' + user['photo']) if user['photo'] else url_for('static', filename='images/default-avatar.png') }}" class="card-img-top" alt="صورة المستخدم">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
-                                <p class="card-text">البريد الإلكتروني: {{ user.email }}</p>
-                                <p class="card-text">
-                                    {% if user.description %}
-                                        {{ user.description }}
-                                    {% else %}
-                                        لا يوجد وصف بعد.
-                                    {% endif %}
-                                </p>
-                                <p class="card-text"><strong>المهارات:</strong> {{ user.skills }}</p>
-                                <a href="{{ url_for('view_profile_detail', user_id=user.id) }}" class="btn">عرض البرتفوليوا</a>
-
-                            </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="card glass-card">
+                        <img src="{{ url_for('static', filename='uploads/' + user['photo']) if user['photo'] else url_for('static', filename='images/default-avatar.png') }}" class="card-img-top" alt="صورة المستخدم">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                            <p class="card-text">{{ user.skills }}</p>
+                            <a href="{{ url_for('view_profile_detail', user_id=user.id) }}" class="btn">عرض التفاصيل</a>
                         </div>
                     </div>
+                </div>
+                
                 {% endfor %}
             </div>
         {% else %}

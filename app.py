@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash,  jsonify,session
 import mysql.connector
 from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -497,7 +497,6 @@ def apply_job(job_id):
 
     conn.close()
     return render_template('apply-job.html', job_id=job_id)
-from flask import flash, redirect, url_for, render_template
 @app.route('/handle-application/<int:application_id>/<string:action>', methods=['POST'])
 def handle_application(application_id, action):
     try:
@@ -611,29 +610,26 @@ def search_jobs():
     return render_template('search-results.html', jobs=jobs, search_query=search_query)
 @app.route('/publish-profile', methods=['POST'])
 def publish_profile():
-    # التأكد من أن المستخدم مسجل دخوله
     if 'user_id' not in session:
-        flash('يرجى تسجيل الدخول أولاً.', 'warning')
-        return redirect(url_for('login'))
+        return jsonify({'success': False, 'message': 'يرجى تسجيل الدخول أولاً.'}), 401
 
     user_id = session['user_id']
+    data = request.get_json()
+    is_published = data.get('is_published', False)
 
-    # الاتصال بقاعدة البيانات
     conn = get_db_connection()
     if conn is None:
-        flash('حدث خطأ في الاتصال بقاعدة البيانات.', 'danger')
-        return redirect(url_for('dashboard'))
+        return jsonify({'success': False, 'message': 'حدث خطأ في الاتصال بقاعدة البيانات.'}), 500
 
-    # تحديث حالة النشر في قاعدة البيانات
     cursor = conn.cursor()
-    cursor.execute("UPDATE users SET is_published = TRUE WHERE id = %s", (user_id,))
+    cursor.execute("UPDATE users SET is_published = %s WHERE id = %s", (is_published, user_id))
     conn.commit()
 
     cursor.close()
     conn.close()
 
-    flash('تم نشر بروفايلك بنجاح!', 'success')
-    return redirect(url_for('portfolio'))  # العودة إلى لوحة التحكم
+    return jsonify({'success': True, 'is_published': is_published})
+
 @app.route('/view-profiles', methods=['GET'])
 def view_profiles():
     # السماح لأصحاب العمل بمشاهدة الملفات الشخصية أيضًا
