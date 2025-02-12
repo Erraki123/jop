@@ -23,82 +23,96 @@
         </form>
 
         <br>
-        <a href="{{ url_for('admin_register') }}">ليس لديك حساب؟ سجل هنا</a>
     </div>
 
     <script src="path/to/bootstrap.js"></script>
 </body>
 </html>
 <style>
-  /* Style global pour le formulaire */
+ /* استيراد خط أنيق */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f7fc; /* Fond gris clair */
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(to right, #007bff, #6610f2);
+    color: #333;
+    direction: rtl;
+    text-align: right;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
-    height: 100vh; /* Prend toute la hauteur de la fenêtre */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .container {
-    max-width: 400px;
-    background-color: white;
+    width: 350px;
+    background: white;
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
     font-size: 24px;
+    color: #4e54c8;
+    margin-bottom: 15px;
 }
 
-/* Style des champs de formulaire */
+/* تنسيق الحقول */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    text-align: right;
 }
 
-.form-control {
-    padding: 15px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    outline: none;
+label {
+    font-weight: bold;
+    display: block;
+    color: #555;
 }
 
-.form-control:focus {
-    border-color: #007bff; /* Bleu clair au focus */
-    box-shadow: 0 0 8px rgba(38, 143, 255, 0.5);
-}
-
-/* Style du bouton de soumission */
-button[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 20px;
-    font-size: 16px;
+input {
     width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #ddd;
     border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: #4e54c8;
+    outline: none;
+    box-shadow: 0 0 8px rgba(78, 84, 200, 0.3);
+}
+
+/* زر تسجيل الدخول */
+button {
+    width: 100%;
+    background: #007bff;
     border: none;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    transition: 0.3s;
 }
 
-button[type="submit"]:hover {
-    background-color: #0056b3; /* Bleu plus foncé au survol */
+button:hover {
+    background: #373b97;
 }
 
-/* Style du lien d'inscription */
+/* رابط التسجيل */
 a {
     display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #007bff;
-    font-size: 16px;
+    margin-top: 10px;
+    color: #4e54c8;
+    font-weight: bold;
     text-decoration: none;
 }
 
@@ -106,4 +120,10 @@ a:hover {
     text-decoration: underline;
 }
 
-</style>
+/* تحسين المظهر للشاشات الصغيرة */
+@media (max-width: 450px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+}

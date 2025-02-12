@@ -6,110 +6,84 @@
     <title>إنشاء حساب</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+/* تنسيق عام للصفحة */
 body {
-    background: linear-gradient(135deg, #686868, #d8d7d5);
-    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    font-family: "Tajawal", sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+/* حاوية رئيسية */
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+}
+
+/* تصميم البطاقة */
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* عنوان البطاقة */
+.card-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* تنسيق الحقول */
+.form-label {
+    font-weight: bold;
     color: #333;
 }
 
-.container {
-    max-width: 600px;
-    margin-top: 50px;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    text-align: right;
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.card {
-    border: none;
-    border-radius: 10px;
-    background: transparent;
-    box-shadow: none;
-}
-
-.card-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #000000;
-    text-align: center;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.form-label {
-    font-weight: bold;
-    color: #000000;
-}
-
 .form-control {
-    border-radius: 8px;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 14px;
-    font-size: 16px;
-    transition: all 0.3s ease;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
 }
 
-.form-control::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.form-control:focus {
-    background: rgba(255, 255, 255, 0.3);
-    border-left: 4px solid #ffcc00;
-    padding-left: 16px;
-    outline: none;
-}
-
+/* زر الإرسال */
 .btn-primary {
-    background-color: #1900ff;
-    border: none;
-    font-weight: 700;
-    padding: 14px;
-    border-radius: 8px;
     width: 100%;
+    background-color: #007bff;
+    border: none;
+    padding: 12px;
     font-size: 16px;
-    color: #ffffff;
-    transition: all 0.3s ease;
-    box-shadow: 0px 5px 15px rgba(255, 204, 0, 0.4);
+    font-weight: bold;
+    transition: 0.3s;
 }
 
 .btn-primary:hover {
-    background-color: #000000;
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 20px rgba(255, 204, 0, 0.6);
+    background-color: #0056b3;
 }
 
+/* رابط تسجيل الدخول */
 .btn-link {
     font-size: 14px;
-    color: #000000;
-    font-weight: 500;
+    text-decoration: none;
+    color: #007bff;
 }
 
 .btn-link:hover {
-    color: #000000;
-    text-decoration: underline;
+    color: #0056b3;
 }
 
-.text-center {
-    margin-top: 20px;
-}
-
+/* الفوتر */
 .footer {
     text-align: center;
-    color: white;
     margin-top: 30px;
+    font-size: 14px;
+    color: #555;
 }
 
 .footer a {
-    color: #0026ff;
+    color: #007bff;
     text-decoration: none;
 }
 
@@ -117,17 +91,6 @@ body {
     text-decoration: underline;
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-    .container {
-        width: 100%;
-        padding: 25px;
-    }
-
-    .card-title {
-        font-size: 1.5rem;
-    }
-}
 
 
     </style>

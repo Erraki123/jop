@@ -20,4 +20,107 @@
     
     <a href="{{ url_for('admin_dashboard') }}">العودة إلى لوحة التحكم</a>
 </body>
-</html>
+</html><style>
+    /* استيراد خط أنيق */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap');
+
+body {
+    font-family: 'Tajawal', sans-serif;
+    background: linear-gradient(to right, #007bff, #6610f2);
+    color: #333;
+    direction: rtl;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* تنسيق نموذج التحديث */
+form {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: right;
+}
+
+label {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+input:focus {
+    border-color: #11998e;
+    outline: none;
+    box-shadow: 0 0 8px rgba(17, 153, 142, 0.3);
+}
+
+/* زر التحديث */
+button {
+    width: 100%;
+    background: #007bff;
+    border: none;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #0e8076;
+}
+
+/* رابط العودة */
+a {
+    display: block;
+    margin-top: 15px;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+a:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* تحسين المظهر للشاشات الصغيرة */
+@media (max-width: 450px) {
+    form {
+        width: 90%;
+        padding: 15px;
+    }
+}
+
+</style>

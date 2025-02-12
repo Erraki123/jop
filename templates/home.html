@@ -8,29 +8,6 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="container">
-            <h2 class="logo">وظائف<span>+</span></h2>
-            <ul class="nav-links">
-                <li><a href="/">الرئيسية</a></li>
-                <li><a href="/about">من نحن</a></li>
-                <li><a href="/contact">اتصل بنا</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="overlay"></div>
-        <div class="hero-content">
-            <h1>مرحبًا بك في منصتنا</h1>
-            <p>اكتشف الوظائف المتاحة أو قم بنشر عروض العمل بكل سهولة</p>
-            <a href="#services" id="startButton" class="btn">ابدأ الآن</a>
-        </div>
-    </header>
-
-    <!-- Services Section -->
     <section id="services" class="services">
         <div class="service-box">
             <img src="/static/images/go.jpg" alt="Search Jobs">
@@ -48,231 +25,103 @@
         </div>
     </section>
 
-    <script>
-        document.getElementById("startButton").addEventListener("click", function(event) {
-            event.preventDefault(); // منع السلوك الافتراضي للرابط
-            const servicesSection = document.getElementById("services");
-            
-            // تحريك الصفحة للأسفل بسلاسة
-            servicesSection.scrollIntoView({ behavior: "smooth" });
-
-            // إظهار الخدمات بتأثير انزلاقي
-            servicesSection.classList.add("show");
-        });
-    </script>
-
-    <style>
-        /* Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Arial", sans-serif;
-        }
-
-        body {
-            text-align: center;
-            color: white;
-            scroll-behavior: smooth;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: #007bff; 
-            padding: 15px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .container {
-            width: 90%;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #ffcc00;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-links li {
-            display: inline;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #ffcc00;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            background: url('https://source.unsplash.com/1600x900/?job,office') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            background: #ffcc00;
-            color: black;
-            padding: 12px 25px;
-            text-decoration: none;
-            font-size: 20px;
-            border-radius: 5px;
-            transition: 0.3s;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn:hover {
-            background: #ffaa00;
-            box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.3);
-        }
-
-        .services {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        padding: 50px 20px;
-        margin-top: 20px;
-        opacity: 0;
-        transform: translateY(50px);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .services.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .service-box {
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .service-box:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .service-box img {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 15px;
-        border-radius: 50%;
-    }
-
-    .service-box h3 {
-        color: #007bff;
-        font-size: 22px;
-        margin-bottom: 8px;
-    }
-
-    .service-box p {
-        font-size: 16px;
-        color: #333;
-        margin-bottom: 5px;
-    }
-
-    .service-box small {
-        font-size: 14px;
-        color: gray;
-        display: block;
-        margin-bottom: 15px;
-    }
-
-    .btn {
-        background: #007bff;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        font-size: 16px;
-        border-radius: 5px;
-        transition: 0.3s;
-        display: inline-block;
-    }
-
-    .btn:hover {
-        background: #0056b3;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .services {
-            flex-direction: column;
-            align-items: center;
-        }
-    }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .services {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .nav-links li {
-                margin: 10px 0;
-            }
-        }
-    </style>
-
 </body>
 </html>
 
+
+   
+
+    <style>/* Styles généraux */
+       /* استيراد خط أنيق */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+}
+
+body {
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+/* 🌟 قسم الخدمات */
+.services {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 50px 20px;
+    flex-wrap: wrap;
+}
+
+.service-box {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.service-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-box img {
+    width: 100%;
+    border-radius: 10px;
+    height: 180px;
+    object-fit: cover;
+}
+
+.service-box h3 {
+    font-size: 22px;
+    color: #11998e;
+    margin: 15px 0 10px;
+}
+
+.service-box p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.service-box small {
+    display: block;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+/* زر الإجراءات */
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #11998e, #38ef7d);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn:hover {
+    background: linear-gradient(to right, #0e8076, #2ecc71);
+}
+
+/* 📱 تحسين للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .services {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .service-box {
+        width: 90%;
+    }
+}

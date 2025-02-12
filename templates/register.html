@@ -65,163 +65,121 @@
 </body>
 </html>
  <style>
- /* General Body Styling */
-/* General Reset */
-* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+/* استيراد خط عربي جميل */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
 
-        /* Background Styling */
-        body {
-            background: linear-gradient(135deg, #686868, #d8d7d5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-        }
+body {
+    font-family: 'Cairo', sans-serif;
+    color: #333;
+    direction: rtl;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-        /* Form Container */
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            width: 100%;
-            text-align: right;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
+/* تنسيق الحاوية الأساسية */
+.container {
+    width: 400px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
 
-        /* Title */
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: center;
-            color: #000000;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        }
+/* تنسيق العنوان */
+h1 {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 15px;
+}
 
-        /* Form Labels */
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1rem;
-            color: #000000;
-        }
+/* تنسيق الحقول */
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    color: #555;
+}
 
-        /* Input & Textarea */
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            outline: none;
-            transition: 0.3s;
-        }
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+}
 
-        /* Placeholder Styling */
-        input::placeholder, textarea::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
+/* تأثير عند التركيز على الحقول */
+input:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
 
-        /* Focus Effect */
-        input:focus, textarea:focus {
-            background: rgba(255, 255, 255, 0.3);
-            border-left: 4px solid #1900ff;
-            padding-left: 16px;
-        }
+/* زر الإرسال */
+button {
+    width: 100%;
+    background: #007bff;
+    border: none;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+    margin-top: 15px;
+}
 
-        /* File Upload */
-        input[type="file"] {
-            padding: 5px;
-            background: rgba(255, 255, 255, 0.2);
-        }
+button:hover {
+    background: #0056b3;
+}
 
-        /* Submit Button */
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #0059ff;
-            color: #ffffff;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0px 5px 15px rgba(255, 204, 0, 0.4);
-        }
+/* زر رفع الملفات */
+input[type="file"] {
+    background: #f9f9f9;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-        button:hover {
-            background: #ffffff;
-            transform: translateY(-3px);
-            box-shadow: 0px 8px 20px rgba(255, 204, 0, 0.6);
-        }
+/* روابط تسجيل الدخول */
+.message {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
 
-        /* Bottom Message */
-        .message {
-            margin-top: 20px;
-            text-align: center;
-        }
+.message a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
 
-        .message a {
-            color: #002fff;
-            font-weight: bold;
-            text-decoration: none;
-        }
+.message a:hover {
+    text-decoration: underline;
+}
 
-        .message a:hover {
-            text-decoration: underline;
-        }
+/* تنسيق رسائل الفلاش */
+.message.success {
+    color: green;
+}
 
-        /* Flash Messages */
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
+.message.error {
+    color: red;
+}
 
-        ul .message {
-            padding: 12px;
-            text-align: center;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        ul .message.success {
-            background: #28a745;
-            color: white;
-        }
-
-        ul .message.danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .container {
-                width: 100%;
-                padding: 25px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-        }
-
- </style>
+/* تنسيق متجاوب للشاشات الصغيرة */
+@media (max-width: 450px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+}
